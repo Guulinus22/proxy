@@ -4,6 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mein Proxy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #proxyResult {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            max-height: 600px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <h1>Willkommen zu meinem Proxy</h1>
@@ -12,15 +31,25 @@
         <input type="text" id="url" placeholder="Gib die URL ein, die du besuchen möchtest" required>
         <button type="submit">Gehe zur URL</button>
     </form>
+
     <div id="proxyResult"></div>
-    
+
     <script>
         document.getElementById("proxyForm").addEventListener("submit", function(e) {
             e.preventDefault();
             const url = document.getElementById("url").value;
+
+            // Sicherstellen, dass die URL korrekt ist
+            if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                alert("Bitte gib eine gültige URL ein, die mit http:// oder https:// beginnt.");
+                return;
+            }
+
+            // Verwende AllOrigins API um die URL abzurufen und CORS zu umgehen
             fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
                 .then(response => response.text())
                 .then(data => {
+                    // Zeige den Inhalt der abgerufenen Seite an
                     document.getElementById("proxyResult").innerHTML = data;
                 })
                 .catch(error => {
